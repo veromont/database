@@ -1,0 +1,6 @@
+CREATE RELATION Hosp (
+		H# int,
+		Hname varchar(25),
+		Haddress varchar(30),
+		rank varchar(7)
+)

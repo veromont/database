@@ -1,0 +1,3 @@
+SET HD IS 
+OWNER Hosp
+MEMBER Dep
