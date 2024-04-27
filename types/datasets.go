@@ -8,19 +8,19 @@ type DsListElement struct {
 }
 
 type Dataset struct {
-	OwnerKV   string
+	OwnerKV     string
 	TupleNumber int32
-	MemberKVs []MemberKV
+	MemberKVs   []MemberKV
 }
 
 type MemberKV struct {
-	KV string
+	KV          string
 	TupleNumber int32
 }
 
 type TableInfo struct {
-	Table       *Relation
-	IsSingle    bool
+	Table    *Relation
+	IsSingle bool
 }
 
 func (ds *DsListElement) ToString(delimeter string) string {

@@ -1,12 +1,12 @@
 package procedures
 
 import (
+	SysCatalog "database/system_catalog"
+	"database/types"
 	"encoding/binary"
 	"fmt"
 	"io"
 	"os"
-	SysCatalog "task1/system_catalog"
-	"task1/types"
 )
 
 func readFixedSizeString(file *os.File, stringLen int32) string {

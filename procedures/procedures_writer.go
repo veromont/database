@@ -1,10 +1,10 @@
 package procedures
 
 import (
+	"database/types"
 	"encoding/binary"
 	"io"
 	"os"
-	"task1/types"
 )
 
 func SaveAllRelationsBin(relationListElements []types.RelationListElement, filename string) {
@@ -21,7 +21,7 @@ func SaveAllRelationsBin(relationListElements []types.RelationListElement, filen
 }
 
 func InsertRelation(filePath string) {
-	
+
 }
 
 func SaveAllDatasetsBin(dsRecords []types.DsListElement, filename string) {
@@ -101,7 +101,7 @@ func writeDSToFile(file *os.File, offset int32, dsRecord types.DsListElement, is
 
 	binary.Write(file, binary.LittleEndian, int32(len(dsRecord.OwnerTableInfo.Table.Name)))
 	binary.Write(file, binary.LittleEndian, []byte(dsRecord.OwnerTableInfo.Table.Name))
-	
+
 	binary.Write(file, binary.LittleEndian, int32(len(dsRecord.MemberTableInfo.Table.Name)))
 	binary.Write(file, binary.LittleEndian, []byte(dsRecord.MemberTableInfo.Table.Name))
 

@@ -1,9 +1,9 @@
 package procedures
 
 import (
+	"database/types"
 	"fmt"
 	"math/rand"
-	"task1/types"
 	"testing"
 )
 

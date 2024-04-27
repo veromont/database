@@ -1,11 +1,11 @@
 package parser
 
 import (
+	"database/utility"
 	"errors"
 	"fmt"
 	"regexp"
 	"strings"
-	"task1/utility"
 )
 
 type Query struct {

@@ -1,7 +1,7 @@
 package SysCatalog
 
 import (
-	"task1/types"
+	"database/types"
 )
 
 var Relations []types.RelationListElement

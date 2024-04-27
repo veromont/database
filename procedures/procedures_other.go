@@ -1,14 +1,14 @@
 package procedures
 
 import (
+	"database/types"
 	"os"
 	"strconv"
-	"task1/types"
 )
 
 // ????
 func CalcNumb(table *types.Relation, kv string) {
-    
+
 }
 
 func CreateFileIfNotExist(filename string) {

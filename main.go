@@ -2,12 +2,12 @@ package main
 
 import (
 	"bufio"
+	CLI "database/command_line_interface"
+	"database/parser"
+	"database/procedures"
+	SysCatalog "database/system_catalog"
 	"fmt"
 	"os"
-	"strings"
-	"task1/parser"
-	"task1/procedures"
-	SysCatalog "task1/system_catalog"
 )
 
 func main() {
@@ -33,23 +33,26 @@ func launchProgram() {
 	for {
 		input, err := acceptUserInput(">")
 		if err != nil {
+			fmt.Printf("Error encountered: %s", err.Error())
 			continue
 		}
-		args := strings.Split(input, " ")
-		command := strings.ToLower(args[0])
+
+		command, object, filename := CLI.GetArgumentsFromCommand(input)
+
+		if !CLI.CommandExists(command) {
+			fmt.Printf("Command %s is illegal, use something from this:", command)
+			listCommands()
+		}
+		if !CLI.IsUsageCorrect(input) {
+			fmt.Printf("Usage of command %s is: %s\n", command, CLI.Commands[command].Usage)
+			continue
+		}
 
 		switch command {
 		case "list":
 			fmt.Println("Selected: List items")
 			listCommands()
 		case "create":
-			if !isUsageCorrect(command, args) {
-				fmt.Printf("Usage of command %s is: %s\n", command, commandsUsageExample[command])
-				continue
-			}
-			filename := args[2]
-			object := strings.ToLower(args[1])
-
 			switch object {
 			case "dataset":
 				createDataset(filename)
@@ -59,13 +62,6 @@ func launchProgram() {
 			fmt.Printf("\nSelected: Execute %s query for %s file with path '%s'\n", command, object, filename)
 
 		case "save":
-			if !isUsageCorrect(command, args) {
-				fmt.Printf("Usage of command %s is: %s\n", command, commandsUsageExample[command])
-				continue
-			}
-			filename := args[2]
-			object := strings.ToLower(args[1])
-
 			switch object {
 			case "datasets":
 				procedures.SaveAllDatasetsBin(SysCatalog.Datasets, filename)
@@ -75,12 +71,6 @@ func launchProgram() {
 			fmt.Printf("Selected: Execute %s query for %s file with path '%s'\n", command, object, filename)
 
 		case "print":
-			if !isUsageCorrect(command, args) {
-				fmt.Printf("Usage of command %s is: %s\n", command, commandsUsageExample[command])
-				continue
-			}
-			object := strings.ToLower(args[1])
-
 			switch object {
 			case "datasets":
 				if len(SysCatalog.Datasets) == 0 {
@@ -102,13 +92,6 @@ func launchProgram() {
 			fmt.Printf("Selected: Execute %s query for %s\n", command, object)
 
 		case "load":
-			if !isUsageCorrect(command, args) {
-				fmt.Printf("Usage of command %s is: %s\n", command, commandsUsageExample[command])
-				continue
-			}
-			object := strings.ToLower(args[1])
-			filename := args[2]
-
 			switch object {
 			case "datasets":
 				SysCatalog.Relations = procedures.LoadRelationListElements(filename)
@@ -134,25 +117,6 @@ func listCommands() {
 	fmt.Println("LOAD DATASETS|RELATIONS {FILENAME}. load all datasets from file")
 	fmt.Println("CREATE DATASET|RELATION {FILENAME}")
 	fmt.Println("EXIT. Exit the program")
-}
-
-func isUsageCorrect(command string, args []string) bool {
-	return len(args) >= expectedArguments[command]
-}
-
-// TODO: turn into objects
-var commandsUsageExample = map[string]string{
-	"save":   "SAVE DATASETS|RELATIONS {FILENAME}",
-	"print":  "PRINT DATASETS|RELATIONS",
-	"load":   "LOAD DATASETS|RELATIONS {FILENAME}",
-	"create": "CREATE DATASET|RELATION {FILENAME}",
-}
-
-var expectedArguments = map[string]int{
-	"save":   3,
-	"print":  2,
-	"load":   2,
-	"create": 3,
 }
 
 func createRelation(filename string) {

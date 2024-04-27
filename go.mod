@@ -1,3 +1,3 @@
-module task1
+module database
 
 go 1.21.5

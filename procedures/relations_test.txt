@@ -1,113 +1,123 @@
-201
-
-4
+771
+id: 
+relation list element type size: 4
+number of fields: 2
+field id: 21
+field type: ϩ
+field size: 8
+field id: 17
+field type: ϩ
+field size: 8
 2
-1
-ϩ
-8
-26
-ϩ
-8
-2
-14
-relationName12
-14
-dataFileName12
-0
-2
-1
-17
-FieldNameVarchar8
-26
-17
-FieldNameVarchar8
+relation name length: 13
+relation name: relationName7
+data file name length: 13
+data file namedataFileName7
+records count0
+number of fields: 2
+field id: 21
+field name length: 17
+field name: FieldNameVarchar8
+field key type: N
+field id: 17
+field name length: 17
+field name: FieldNameVarchar8
+field key type: N
 
-13
-relationName8
-13
-dataFileName8
-0
-2
-1
-17
-FieldNameVarchar8
-26
-17
-FieldNameVarchar8
+relation name length: 13
+relation name: relationName9
+data file name length: 13
+data file namedataFileName9
+records count0
+number of fields: 2
+field id: 21
+field name length: 17
+field name: FieldNameVarchar8
+field key type: N
+field id: 17
+field name length: 17
+field name: FieldNameVarchar8
+field key type: N
 
-402
-
-4
+1542
+id: 
+relation list element type size: 4
+number of fields: 2
+field id: 21
+field type: ϩ
+field size: 8
+field id: 17
+field type: ϩ
+field size: 8
 2
-1
-ϩ
-8
-26
-ϩ
-8
-2
-14
-relationName12
-14
-dataFileName12
-0
-2
-1
-17
-FieldNameVarchar8
-26
-17
-FieldNameVarchar8
+relation name length: 13
+relation name: relationName7
+data file name length: 13
+data file namedataFileName7
+records count0
+number of fields: 2
+field id: 21
+field name length: 17
+field name: FieldNameVarchar8
+field key type: N
+field id: 17
+field name length: 17
+field name: FieldNameVarchar8
+field key type: N
 
-13
-relationName8
-13
-dataFileName8
-0
-2
-1
-17
-FieldNameVarchar8
-26
-17
-FieldNameVarchar8
+relation name length: 13
+relation name: relationName9
+data file name length: 13
+data file namedataFileName9
+records count0
+number of fields: 2
+field id: 21
+field name length: 17
+field name: FieldNameVarchar8
+field key type: N
+field id: 17
+field name length: 17
+field name: FieldNameVarchar8
+field key type: N
 
-603
-
-4
+2313
+id: 
+relation list element type size: 4
+number of fields: 2
+field id: 21
+field type: ϩ
+field size: 8
+field id: 17
+field type: ϩ
+field size: 8
 2
-1
-ϩ
-8
-26
-ϩ
-8
-2
-14
-relationName12
-14
-dataFileName12
-0
-2
-1
-17
-FieldNameVarchar8
-26
-17
-FieldNameVarchar8
+relation name length: 13
+relation name: relationName7
+data file name length: 13
+data file namedataFileName7
+records count0
+number of fields: 2
+field id: 21
+field name length: 17
+field name: FieldNameVarchar8
+field key type: N
+field id: 17
+field name length: 17
+field name: FieldNameVarchar8
+field key type: N
 
-13
-relationName8
-13
-dataFileName8
-0
-2
-1
-17
-FieldNameVarchar8
-26
-17
-FieldNameVarchar8
-
-archar8
+relation name length: 13
+relation name: relationName9
+data file name length: 13
+data file namedataFileName9
+records count0
+number of fields: 2
+field id: 21
+field name length: 17
+field name: FieldNameVarchar8
+field key type: N
+field id: 17
+field name length: 17
+field name: FieldNameVarchar8
+field key type: N
 

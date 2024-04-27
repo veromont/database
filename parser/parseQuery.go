@@ -1,11 +1,11 @@
 package parser
 
 import (
+	SysCatalog "database/system_catalog"
+	"database/types"
 	"fmt"
 	"strconv"
 	"strings"
-	SysCatalog "task1/system_catalog"
-	"task1/types"
 )
 
 func ParseCreateRelationQuery(createQuery string) (*types.RelationListElement, error) {
