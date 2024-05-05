@@ -20,19 +20,21 @@ const (
 )
 
 type KeyType = rune
+
 const (
 	P KeyType = 'P'
 	F KeyType = 'F'
 	N KeyType = 'N'
 )
+
 type FieldName struct {
 	FieldId int32
 	Name    string
-	Key KeyType
+	Key     KeyType
 }
 
 type RelationType struct {
-	Id int32
+	Id     int32
 	Size   int32
 	Fields []FieldType
 }
@@ -49,19 +51,18 @@ type RelationListElement struct {
 	Relations []Relation
 }
 
-
 func (relListElem *RelationListElement) ToString(delimeter string) string {
 	result := ""
 	result += "id: " + string(relListElem.Type.Id) + delimeter
 	result += "relation list element type size: " + fmt.Sprint(relListElem.Type.Size) + delimeter
-	
+
 	result += "number of fields: " + fmt.Sprint(len(relListElem.Type.Fields)) + delimeter
-	for _, field := range(relListElem.Type.Fields) {
-		result += "field id: " +  fmt.Sprint(field.FieldId) + delimeter
+	for _, field := range relListElem.Type.Fields {
+		result += "field id: " + fmt.Sprint(field.FieldId) + delimeter
 		result += "field type: " + string(field.Type) + delimeter
 		result += "field size: " + fmt.Sprint(field.Size) + delimeter
 	}
-	
+
 	result += fmt.Sprint(len(relListElem.Relations)) + delimeter
 	for _, table := range relListElem.Relations {
 		result += table.ToString(delimeter) + delimeter
@@ -78,7 +79,7 @@ func (relation *Relation) ToString(delimeter string) string {
 	result += "records count" + fmt.Sprint(relation.RecordsCount) + delimeter
 	result += "number of fields: " + fmt.Sprint(len(relation.Fields)) + delimeter
 	for _, field := range relation.Fields {
-		result += "field id: " + fmt.Sprint(field.FieldId)	+ delimeter
+		result += "field id: " + fmt.Sprint(field.FieldId) + delimeter
 		result += "field name length: " + fmt.Sprint(len(field.Name)) + delimeter
 		result += "field name: " + field.Name + delimeter
 		result += "field key type: " + string(field.Key) + delimeter
@@ -110,9 +111,9 @@ func NewRelationListElement() *RelationListElement {
 }
 
 func NewRelationListElementType() *RelationType {
-	return &RelationType{Id:-1, Size: 0, Fields: make([]FieldType, 0)}
+	return &RelationType{Id: -1, Size: 0, Fields: make([]FieldType, 0)}
 }
 
 func (relListElem *RelationListElement) Copy() *RelationListElement {
-	return &RelationListElement{Type:relListElem.Type, Relations: relListElem.Relations}
+	return &RelationListElement{Type: relListElem.Type, Relations: relListElem.Relations}
 }

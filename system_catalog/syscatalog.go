@@ -4,6 +4,8 @@ import (
 	"database/types"
 )
 
+type RelationListSort []types.RelationListElement
+
 var Relations []types.RelationListElement
 var Datasets []types.DsListElement
 
@@ -31,3 +33,7 @@ func GetDatasetByName(name string) *types.DsListElement {
 	}
 	return nil
 }
+
+func (a RelationListSort) Len() int           { return len(a) }
+func (a RelationListSort) Less(i, j int) bool { return a[i].Type.Size < a[j].Type.Size }
+func (a RelationListSort) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }

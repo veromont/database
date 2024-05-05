@@ -1,10 +1,12 @@
 package procedures
 
 import (
+	SysCatalog "database/system_catalog"
 	"database/types"
 	"encoding/binary"
 	"io"
 	"os"
+	"sort"
 )
 
 func SaveAllRelationsBin(relationListElements []types.RelationListElement, filename string) {
@@ -12,6 +14,9 @@ func SaveAllRelationsBin(relationListElements []types.RelationListElement, filen
 	file, err := os.OpenFile(filename, os.O_RDWR, 0666)
 	panicError(err)
 	defer file.Close()
+
+	// store with smallest first
+	sort.Sort(SysCatalog.RelationListSort(relationListElements))
 
 	var offset int32 = 0
 	for i, relListElem := range relationListElements {
@@ -49,6 +54,7 @@ func writeRelationToFile(file *os.File, offset int32, relListElem types.Relation
 	binary.Write(file, binary.LittleEndian, offset)
 
 	binary.Write(file, binary.LittleEndian, relListElem.Type.Id)
+
 	binary.Write(file, binary.LittleEndian, int32(relListElem.Type.Size))
 
 	binary.Write(file, binary.LittleEndian, int32(len(relListElem.Type.Fields)))

@@ -52,6 +52,7 @@ func launchProgram() {
 		case "list":
 			fmt.Println("Selected: List items")
 			listCommands()
+
 		case "create":
 			switch object {
 			case "dataset":
