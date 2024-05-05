@@ -1,3 +1,3 @@
-module database
+module myDb
 
 go 1.21.5

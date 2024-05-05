@@ -2,11 +2,11 @@ package main
 
 import (
 	"bufio"
-	CLI "database/command_line_interface"
-	"database/parser"
-	"database/procedures"
-	SysCatalog "database/system_catalog"
 	"fmt"
+	CLI "myDb/command_line_interface"
+	"myDb/parser"
+	"myDb/procedures"
+	SysCatalog "myDb/system_catalog"
 	"os"
 )
 

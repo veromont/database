@@ -1,9 +1,9 @@
 package recording
 
 import (
-	"database/types"
 	"encoding/binary"
 	"fmt"
+	"myDb/types"
 	"os"
 )
 

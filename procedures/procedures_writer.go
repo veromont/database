@@ -1,10 +1,10 @@
 package procedures
 
 import (
-	SysCatalog "database/system_catalog"
-	"database/types"
 	"encoding/binary"
 	"io"
+	SysCatalog "myDb/system_catalog"
+	"myDb/types"
 	"os"
 	"sort"
 )
@@ -108,19 +108,21 @@ func writeDSToFile(file *os.File, offset int32, dsRecord types.DsListElement, is
 	binary.Write(file, binary.LittleEndian, int32(len(dsRecord.OwnerTableInfo.Table.Name)))
 	binary.Write(file, binary.LittleEndian, []byte(dsRecord.OwnerTableInfo.Table.Name))
 
+	binary.Write(file, binary.LittleEndian, int32(len(dsRecord.Datasets)))
+	for _, ds := range dsRecord.Datasets {
+		binary.Write(file, binary.LittleEndian, int32(len(ds.OwnerKV)))
+		binary.Write(file, binary.LittleEndian, []byte(ds.OwnerKV))
+		binary.Write(file, binary.LittleEndian, int32(len(ds.MemberKVs)))
+		for _, mkv := range ds.MemberKVs {
+			binary.Write(file, binary.LittleEndian, int32(len(mkv)))
+			binary.Write(file, binary.LittleEndian, []byte(mkv))
+		}
+	}
+
 	binary.Write(file, binary.LittleEndian, int32(len(dsRecord.MemberTableInfo.Table.Name)))
 	binary.Write(file, binary.LittleEndian, []byte(dsRecord.MemberTableInfo.Table.Name))
 
 	binary.Write(file, binary.LittleEndian, int32(len(dsRecord.Datasets)))
-	// for _, ds := range dsRecord.Datasets {
-	// 	binary.Write(file, binary.LittleEndian, int32(len(ds.OwnerKV)))
-	// 	binary.Write(file, binary.LittleEndian, []byte(ds.OwnerKV))
-	// 	binary.Write(file, binary.LittleEndian, int32(len(ds.MemberKVs)))
-	// 	for _, mkv := range ds.MemberKVs {
-	// 		binary.Write(file, binary.LittleEndian, int32(len(mkv.RecordKV)))
-	// 		binary.Write(file, binary.LittleEndian, []byte(mkv.RecordKV))
-	// 	}
-	// }
 
 	length, err := file.Seek(0, io.SeekCurrent)
 	panicError(err)

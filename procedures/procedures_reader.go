@@ -1,11 +1,11 @@
 package procedures
 
 import (
-	SysCatalog "database/system_catalog"
-	"database/types"
 	"encoding/binary"
 	"fmt"
 	"io"
+	SysCatalog "myDb/system_catalog"
+	"myDb/types"
 	"os"
 )
 
@@ -25,6 +25,7 @@ func readInt32(file *os.File) int32 {
 	return integer
 }
 
+// LOADT PROCEDURE
 func LoadRelationListElements(filename string) []types.RelationListElement {
 	file, err := os.Open(filename)
 	panicError(err)
@@ -58,6 +59,7 @@ func LoadRelationListElements(filename string) []types.RelationListElement {
 	return result
 }
 
+// LOADDS PROCEDURES
 func LoadDatasets(filename string) []types.DsListElement {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -84,6 +86,12 @@ func LoadDatasets(filename string) []types.DsListElement {
 			return nil
 		}
 
+		ownerKvCount := readInt32(file)
+		dsListElem.Datasets = make([]types.Dataset, ownerKvCount)
+		for i := range dsListElem.Datasets {
+			readDataset(file, &dsListElem, i)
+		}
+
 		memberTableNameLen := readInt32(file)
 		memberTableName := readFixedSizeString(file, memberTableNameLen)
 		memberRelation := SysCatalog.GetRelationByName(memberTableName)
@@ -94,29 +102,26 @@ func LoadDatasets(filename string) []types.DsListElement {
 
 		dsListElem.OwnerTableInfo.Table = ownerRelation
 		dsListElem.MemberTableInfo.Table = memberRelation
-		ownerKeyCount := readInt32(file)
-		dsListElem.Datasets = make([]types.Dataset, ownerKeyCount)
-		// for i := range dsListElem.Datasets {
-		// 	readDataset(file, &dsListElem, i)
-		// }
 
 		result = append(result, dsListElem)
 	}
 	return result
 }
 
-// func readDataset(file *os.File, dsListElem *types.DsListElement, i int) {
-// 	kvLen := readInt32(file)
-// 	dsListElem.Datasets[i].OwnerKV = readFixedSizeString(file, kvLen)
+// RECOVERYDS PROCEDURE
+func readDataset(file *os.File, dsListElem *types.DsListElement, i int) {
+	kvLen := readInt32(file)
+	dsListElem.Datasets[i].OwnerKV = readFixedSizeString(file, kvLen)
 
-// 	memKvCount := readInt32(file)
-// 	dsListElem.Datasets[i].MemberKVs = make([]types.MemberKV, memKvCount)
-// 	for j := range dsListElem.Datasets[i].MemberKVs {
-// 		mkvLen := readInt32(file)
-// 		dsListElem.Datasets[i].MemberKVs[j].KValues = readFixedSizeString(file, mkvLen)
-// 	}
-// }
+	memKvCount := readInt32(file)
+	dsListElem.Datasets[i].MemberKVs = make([]string, memKvCount)
+	for j := range dsListElem.Datasets[i].MemberKVs {
+		mkvLen := readInt32(file)
+		dsListElem.Datasets[i].MemberKVs[j] = readFixedSizeString(file, mkvLen)
+	}
+}
 
+// RECOVERYT PROCEDURE
 func readRelation(file *os.File, relationListElement *types.RelationListElement, i int) {
 	nameLength := readInt32(file)
 	relationListElement.Relations[i].Name = readFixedSizeString(file, nameLength)

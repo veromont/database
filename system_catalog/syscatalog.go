@@ -1,7 +1,7 @@
 package SysCatalog
 
 import (
-	"database/types"
+	"myDb/types"
 )
 
 type RelationListSort []types.RelationListElement

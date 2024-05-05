@@ -1,13 +1,14 @@
 package parser
 
 import (
-	SysCatalog "database/system_catalog"
-	"database/types"
 	"fmt"
+	SysCatalog "myDb/system_catalog"
+	"myDb/types"
 	"strconv"
 	"strings"
 )
 
+// SyntInsertR PROCEDURE
 func ParseCreateRelationQuery(createQuery string) (*types.RelationListElement, error) {
 	if !isQueryCorrect(Query{Text: createQuery, Type: Query_t}) {
 		return nil, fmt.Errorf("query '%s' is incorrect", createQuery)
@@ -47,6 +48,7 @@ OWNER [SINGLE] <Ім’я сутності>
 MEMBER [SINGLE] <Ім’я сутності>
 */
 
+// SyntInsertDS PROCEDURE
 func ParseCreateDatasetQuery(createQuery string) (*types.DsListElement, error) {
 	ds := types.DsListElement{}
 	ds.OwnerTableInfo.IsSingle = false

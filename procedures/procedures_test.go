@@ -1,9 +1,9 @@
 package procedures
 
 import (
-	"database/types"
 	"fmt"
 	"math/rand"
+	"myDb/types"
 	"testing"
 )
 

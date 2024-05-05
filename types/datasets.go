@@ -10,12 +10,7 @@ type DsListElement struct {
 type Dataset struct {
 	OwnerKV     string
 	TupleNumber int32
-	MemberKVs   []MemberKV
-}
-
-type MemberKV struct {
-	KV          string
-	TupleNumber int32
+	MemberKVs   []string
 }
 
 type TableInfo struct {
