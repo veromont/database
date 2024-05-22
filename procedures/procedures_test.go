@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"myDb/types"
+	"myDb/utility"
 	"testing"
 )
 
@@ -43,8 +44,8 @@ func TestRelationCreationAndReading(t *testing.T) {
 	element.Type = types.RelationType{Size: 4, Fields: fieldTypes}
 	element.Type.Id = 17
 	relationListElements = append(relationListElements, element)
-	CreateFileIfNotExist("relations_test.bin")
-	CreateFileIfNotExist("relations_test.txt")
+	utility.CreateFileIfNotExists("relations_test.bin")
+	utility.CreateFileIfNotExists("relations_test.txt")
 
 	el2 := element.Copy()
 	el2.Type.Id = 3
@@ -66,7 +67,7 @@ func TestRelationCreationAndReading(t *testing.T) {
 }
 
 func TestDatasetCreationAndReading(t *testing.T) {
-	CreateFileIfNotExist("datasets_test.bin")
+	utility.CreateFileIfNotExists("datasets_test.bin")
 
 	//var dsListElements = make([]types.DsListElement, 0)
 	//types.TableInfo

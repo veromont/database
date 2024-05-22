@@ -17,7 +17,7 @@ import (
 // NOTE: i can just use size instead of relListElem
 
 // CALCNUMB PROCEDURE
-func CalcNumb(table *types.Relation, kv string, relListElem *types.RelationListElement) int32 {
+func CalcRow(table *types.Relation, kv string, relListElem *types.RelationListElement) int32 {
 
 	filename := table.DataFileName
 
@@ -70,17 +70,6 @@ func CalcNumb(table *types.Relation, kv string, relListElem *types.RelationListE
 		file.Seek(int64(nextRowAddress), io.SeekStart)
 	}
 	return -1
-}
-
-func CreateFileIfNotExist(filename string) {
-	_, err := os.Stat(filename)
-	if os.IsNotExist(err) {
-		file, err := os.Create(filename)
-		if err != nil {
-			panic(err) // Handle error appropriately
-		}
-		file.Close()
-	}
 }
 
 // for test and demonstration purpose, OUTDATED

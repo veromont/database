@@ -5,12 +5,13 @@ import (
 	"io"
 	SysCatalog "myDb/system_catalog"
 	"myDb/types"
+	"myDb/utility"
 	"os"
 	"sort"
 )
 
 func SaveAllRelationsBin(relationListElements []types.RelationListElement, filename string) {
-	CreateFileIfNotExist(filename)
+	utility.CreateFileIfNotExists(filename)
 	file, err := os.OpenFile(filename, os.O_RDWR, 0666)
 	panicError(err)
 	defer file.Close()
@@ -25,12 +26,25 @@ func SaveAllRelationsBin(relationListElements []types.RelationListElement, filen
 	}
 }
 
-func InsertRelation(filePath string) {
+func InsertRelation(tuple map[int]string, table *types.Relation) {
+	filename := table.DataFileName
+	utility.CreateFileIfNotExists(filename)
+	file, err := os.OpenFile(filename, os.O_RDWR, 0666)
+	panicError(err)
+	defer file.Close()
+
+	file.Seek(0, io.SeekEnd)
+
+	for fieldId, fieldValue := range tuple {
+		binary.Write(file, binary.LittleEndian, int32(fieldId))
+		binary.Write(file, binary.LittleEndian, int32(len(fieldValue)))
+		binary.Write(file, binary.LittleEndian, []byte(fieldValue))
+	}
 
 }
 
 func SaveAllDatasetsBin(dsRecords []types.DsListElement, filename string) {
-	CreateFileIfNotExist(filename)
+	utility.CreateFileIfNotExists(filename)
 	file, err := os.OpenFile(filename, os.O_RDWR, 0666)
 	panicError(err)
 	defer file.Close()

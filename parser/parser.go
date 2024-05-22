@@ -16,12 +16,14 @@ type Query struct {
 type QueryType int32
 
 const (
-	Query_t QueryType = iota
-	Misc_t            //Error type
+	CreateQuery_t QueryType = iota
+	InsertQuery_t
+	Misc_t //Error type
 )
 
 const (
 	createQueryRegex = iota
+	insertQueryRegex
 	identifierRegex
 	bracketRegex
 	tokenRegex
@@ -30,12 +32,14 @@ const (
 
 var actions = `(CREATE|ALTER|DELETE)`
 var objects = `(RELATION|DATASET)`
+
 var regexMap = map[int]string{
 	createQueryRegex: `(?im)` + actions + `(\s+)` + objects + `(\s+)[a-zA-Z]\w*(\s+)\((?s).*\)`,
+	insertQueryRegex: `INSERT\s+INTO\s+\w+\s*\(\w+(,\s*\w+)*\)\s+VALUES\s*\(.+\)`,
 
 	identifierRegex: `[a-zA-Z]\w*`,
 	bracketRegex:    `\((?s).*\)`,
-	tokenRegex:      `[a-zA-Z]\w*|\((?s).*\)`,
+	tokenRegex:      `[a-zA-Z]\w*|\((?s).*?\)`,
 	sizeOfTypeRegex: `\([1-9]\d*\)`,
 }
 

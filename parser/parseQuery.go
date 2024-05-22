@@ -4,13 +4,72 @@ import (
 	"fmt"
 	SysCatalog "myDb/system_catalog"
 	"myDb/types"
+	"myDb/utility"
 	"strconv"
 	"strings"
 )
 
-// SyntInsertR PROCEDURE
+/*
+<Створення таблиці> ::= CREATE RELATION <Ім’я таблиці> (
+
+	{ <ім'я поля> тип поля, }
+
+)
+якщо поле primary key в кінець ім'я додається #. В таблиці лише 1 primary key
+
+<Створення кортежу> ::= INSERT INTO <Ім’я таблиці> ({ <ім'я поля> тип поля, })
+VALUES ({ <значення поля>, })
+*/
+func ProcessInsertion(values []map[string]string, tableName string) []map[int32]string {
+	table := SysCatalog.GetRelationByName(tableName)
+	var result []map[int32]string
+	var nameIdMap map[string]int32
+	for nameKey := range values[0] {
+		for _, fieldName := range table.Fields {
+			if fieldName.Name == nameKey {
+				nameIdMap[nameKey] = fieldName.FieldId
+			}
+		}
+	}
+	for i, valueTuple := range values {
+		result[i] = make(map[int32]string)
+		for name, value := range valueTuple {
+			result[i][nameIdMap[name]] = value
+		}
+	}
+	return result
+}
+func ParseInsertQuery(insertQuery string) (string, []map[string]string, error) {
+	if !isQueryCorrect(Query{Text: insertQuery, Type: InsertQuery_t}) {
+		return "", nil, fmt.Errorf("query '%s' is incorrect", insertQuery)
+	}
+	tokens, err := getStringsOfRegex(insertQuery, tokenRegex)
+	if err != nil || len(tokens) < 6 {
+		return "", nil, fmt.Errorf("error when parsing query '%s'", insertQuery)
+	}
+
+	// INSERT INTO <tablename> => <tablename> index 2
+	tableName := tokens[2]
+
+	fieldsBracket := tokens[3]
+	removeBrackets(&fieldsBracket)
+
+	fieldNames := strings.Split(utility.RemoveWhitespaces(fieldsBracket), ",")
+
+	var tuples []map[string]string
+	for i := 5; i < len(tokens); i++ {
+		tuple, err := parseInsertTupleBrackets(fieldNames, tokens[i])
+		if err != nil {
+			return "", nil, err
+		}
+		tuples = append(tuples, tuple)
+	}
+	return tableName, tuples, nil
+}
+
+// SyntInsertR PROCEDURE related
 func ParseCreateRelationQuery(createQuery string) (*types.RelationListElement, error) {
-	if !isQueryCorrect(Query{Text: createQuery, Type: Query_t}) {
+	if !isQueryCorrect(Query{Text: createQuery, Type: CreateQuery_t}) {
 		return nil, fmt.Errorf("query '%s' is incorrect", createQuery)
 	}
 	relationListElement := types.NewRelationListElement()
@@ -48,7 +107,7 @@ OWNER [SINGLE] <Ім’я сутності>
 MEMBER [SINGLE] <Ім’я сутності>
 */
 
-// SyntInsertDS PROCEDURE
+// SyntInsertDS PROCEDURE related
 func ParseCreateDatasetQuery(createQuery string) (*types.DsListElement, error) {
 	ds := types.DsListElement{}
 	ds.OwnerTableInfo.IsSingle = false
@@ -137,4 +196,22 @@ func parseFieldToken(fieldToken string, fieldId int32) (*types.FieldType, *types
 	fieldType.Size = int32(size)
 
 	return fieldType, fieldName, nil
+}
+
+func parseInsertTupleBrackets(fieldNames []string, tupleBracketString string) (map[string]string, error) {
+	removeBrackets(&tupleBracketString)
+	tupleBracketString = utility.RemoveWhitespaces(tupleBracketString)
+	values := strings.Split(tupleBracketString, ",")
+
+	if len(values) != len(fieldNames) {
+		return nil,
+			fmt.Errorf("expected number of fields %d, got number of fields %d in string (%s)",
+				len(values), len(fieldNames), tupleBracketString)
+	}
+
+	var res map[string]string = make(map[string]string)
+	for i, v := range values {
+		res[fieldNames[i]] = v
+	}
+	return res, nil
 }

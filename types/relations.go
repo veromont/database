@@ -11,20 +11,12 @@ type FieldType struct {
 	Size    int32
 }
 
-type FieldSign = rune
-
-const (
-	PrimaryKey FieldSign = 'P'
-	ForeignKey FieldSign = 'F'
-	Nothing    FieldSign = 'N'
-)
-
 type KeyType = rune
 
 const (
-	P KeyType = 'P'
-	F KeyType = 'F'
-	N KeyType = 'N'
+	PrimaryKey KeyType = 'P'
+	ForeignKey KeyType = 'F'
+	Nothing    KeyType = 'N'
 )
 
 type FieldName struct {

@@ -79,3 +79,24 @@ func TestRemoveBrakets(t *testing.T) {
 		t.Errorf("failed to not remove brakets, result: %s", s2)
 	}
 }
+
+// TODO: parse strings into values properly
+func TestParseInsertQuery(t *testing.T) {
+	s := `INSERT INTO doc (vic, dic, pic)
+	VALUES (12, "1234", 56 )`
+	tableName, fields, _ := ParseInsertQuery(s)
+	ProcessInsertion(fields, tableName)
+
+	if tableName != "doc" {
+		t.Errorf("expected 3 arguments")
+	}
+	if len(fields[0]) != 3 {
+		t.Errorf("expected 3 arguments")
+	}
+	s1 := `INSERT INTO doc (vic, dic, pic)
+	VALUES (12, "1234" )`
+	tableName, fields, err := ParseInsertQuery(s1)
+	if err == nil {
+		t.Errorf("error expected")
+	}
+}
