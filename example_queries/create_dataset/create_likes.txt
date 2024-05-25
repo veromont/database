@@ -1,0 +1,3 @@
+SET likes IS
+OWNER SINGLE chapters
+MEMBER users

@@ -27,7 +27,7 @@ func TestGetRegex(t *testing.T) {
 
 func TestParseRelationFieldsIntoTokens(t *testing.T) {
 	v, err := getFieldsFromQuery(`CREATE RELATION Persons (
-		PersonID int,
+		PersonID# int,
 		LastName varchar(255),
 		FirstName varchar(255),
 		Address varchar(255),
@@ -44,7 +44,7 @@ func TestParseRelationFieldsIntoTokens(t *testing.T) {
 
 func TestParseCreateQuery(t *testing.T) {
 	relation, err := ParseCreateRelationQuery(`CREATE RELATION Persons (
-		PersonID int,
+		PersonID# int,
 		LastName varchar(255),
 		FirstName varchar(255),
 		Address varchar(255),
@@ -56,6 +56,11 @@ func TestParseCreateQuery(t *testing.T) {
 	r := relation.Relations[0]
 	if r.Name != "Persons" {
 		t.Errorf("Expected name Persons, got %s", r.Name)
+	}
+	for _, fieldName := range r.Fields {
+		if fieldName.Name == "PersonID#" && fieldName.Key != 'P' {
+			t.Errorf("Expected field PersonID# to be a primary key")
+		}
 	}
 	if len(r.Fields) != 5 {
 		t.Errorf("Expected number of fields: 5, got %d", len(r.Fields))
@@ -84,7 +89,7 @@ func TestRemoveBrakets(t *testing.T) {
 func TestParseInsertQuery(t *testing.T) {
 	s := `INSERT INTO doc (vic, dic, pic)
 	VALUES (12, "1234", 56 )`
-	tableName, fields, _ := ParseInsertQuery(s)
+	tableName, fields, _ := ParseInsertRecordQuery(s)
 	ProcessInsertion(fields, tableName)
 
 	if tableName != "doc" {
@@ -95,7 +100,7 @@ func TestParseInsertQuery(t *testing.T) {
 	}
 	s1 := `INSERT INTO doc (vic, dic, pic)
 	VALUES (12, "1234" )`
-	tableName, fields, err := ParseInsertQuery(s1)
+	_, _, err := ParseInsertRecordQuery(s1)
 	if err == nil {
 		t.Errorf("error expected")
 	}

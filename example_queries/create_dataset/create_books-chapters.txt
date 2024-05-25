@@ -1,0 +1,3 @@
+SET books-chaptes IS 
+OWNER books
+MEMBER chapters

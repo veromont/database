@@ -23,7 +23,7 @@ VALUES ({ <значення поля>, })
 func ProcessInsertion(values []map[string]string, tableName string) []map[int32]string {
 	table := SysCatalog.GetRelationByName(tableName)
 	var result []map[int32]string
-	var nameIdMap map[string]int32
+	var nameIdMap map[string]int32 = make(map[string]int32)
 	for nameKey := range values[0] {
 		for _, fieldName := range table.Fields {
 			if fieldName.Name == nameKey {
@@ -39,7 +39,7 @@ func ProcessInsertion(values []map[string]string, tableName string) []map[int32]
 	}
 	return result
 }
-func ParseInsertQuery(insertQuery string) (string, []map[string]string, error) {
+func ParseInsertRecordQuery(insertQuery string) (string, []map[string]string, error) {
 	if !isQueryCorrect(Query{Text: insertQuery, Type: InsertQuery_t}) {
 		return "", nil, fmt.Errorf("query '%s' is incorrect", insertQuery)
 	}

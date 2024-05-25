@@ -43,21 +43,6 @@ var regexMap = map[int]string{
 	sizeOfTypeRegex: `\([1-9]\d*\)`,
 }
 
-// if no type found, returns miscellaneous type
-// func getQueryType(query string) QueryType {
-// 	queryKeywords := map[QueryType]string{
-// 		Create_t: "CREATE",
-// 		Alter_t: "ALTER",
-// 		Delete_t: "DELETE",
-// 	}
-// 	for key, value := range queryKeywords {
-// 		if strings.Contains(query, value) {
-// 			return key
-// 		}
-// 	}
-// 	return Misc_t
-// }
-
 func isQueryCorrect(query Query) bool {
 	strings, err := getStringsOfRegex(query.Text, int(query.Type))
 	if err != nil {

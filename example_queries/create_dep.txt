@@ -1,4 +1,0 @@
-CREATE RELATION Dep (
-		D# int,
-		Dname varchar(25)
-)

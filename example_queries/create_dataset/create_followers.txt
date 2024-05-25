@@ -1,0 +1,3 @@
+SET followers IS
+OWNER users
+MEMBER users

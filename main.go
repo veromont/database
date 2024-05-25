@@ -4,10 +4,12 @@ import (
 	"bufio"
 	"fmt"
 	CLI "myDb/command_line_interface"
+	"myDb/params"
 	"myDb/parser"
 	"myDb/procedures"
 	SysCatalog "myDb/system_catalog"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -38,7 +40,8 @@ func launchProgram() {
 		}
 
 		command, object, filename := CLI.GetArgumentsFromCommand(input)
-
+		command = strings.ToLower(command)
+		object = strings.ToLower(object)
 		if !CLI.CommandExists(command) {
 			fmt.Printf("Command %s is illegal, use something from this:", command)
 			listCommands()
@@ -54,6 +57,7 @@ func launchProgram() {
 			listCommands()
 
 		case "create":
+			filename = params.WorkDir + "\\" + filename
 			switch object {
 			case "dataset":
 				createDataset(filename)
@@ -63,6 +67,7 @@ func launchProgram() {
 			fmt.Printf("\nSelected: Execute %s query for %s file with path '%s'\n", command, object, filename)
 
 		case "save":
+			filename = params.SaveDir + "\\" + filename
 			switch object {
 			case "datasets":
 				procedures.SaveAllDatasetsBin(SysCatalog.Datasets, filename)
@@ -93,6 +98,7 @@ func launchProgram() {
 			fmt.Printf("Selected: Execute %s query for %s\n", command, object)
 
 		case "load":
+			filename = params.SaveDir + "\\" + filename
 			switch object {
 			case "datasets":
 				SysCatalog.Relations = procedures.LoadRelationListElements(filename)
@@ -100,6 +106,15 @@ func launchProgram() {
 				SysCatalog.Datasets = procedures.LoadDatasets(filename)
 			}
 			fmt.Printf("Selected: Execute %s query for %s file with path '%s'\n", command, object, filename)
+
+		case "set":
+			switch object {
+			case "workdir":
+				setWorkdir(filename)
+			case "savedir":
+				setSaveDir(filename)
+			}
+			fmt.Printf("Selected: Execute %s query for %s directory with path '%s'\n", command, object, filename)
 
 		case "exit":
 			fmt.Println("Selected: Exit the program")
@@ -111,11 +126,14 @@ func launchProgram() {
 	}
 }
 
+// TODO: add commands SELECT WORKDIR AND SELECT SAVEDIR
 func listCommands() {
 	fmt.Println("LIST. List commands")
 	fmt.Println("SAVE DATASETS|RELATIONS {FILENAME}. save objects to a given file")
 	fmt.Println("PRINT DATASETS|RELATIONS. print all relations")
 	fmt.Println("LOAD DATASETS|RELATIONS {FILENAME}. load all datasets from file")
+	fmt.Println("CREATE DATASET|RELATION {FILENAME}")
+	fmt.Println("SET SAVEDIR|WORKDIR {PATH}")
 	fmt.Println("CREATE DATASET|RELATION {FILENAME}")
 	fmt.Println("EXIT. Exit the program")
 }
@@ -161,4 +179,20 @@ func createDataset(filename string) {
 
 	SysCatalog.Datasets = append(SysCatalog.Datasets, *elem)
 	fmt.Println("Dataset was successfully created")
+}
+
+func insertRelation(filename string) {
+
+}
+
+func insertDataset(filename string) {
+
+}
+
+func setWorkdir(pathToDir string) {
+	params.WorkDir = pathToDir
+}
+
+func setSaveDir(pathToDir string) {
+	params.SaveDir = pathToDir
 }

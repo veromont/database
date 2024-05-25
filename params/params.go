@@ -1,6 +1,7 @@
 package params
 
-const (
-	RelationDefaultFilename = "system_catalog\\relations.txt"
-	DsDefaultFilename = "system_catalog\\datasets.txt"
+var (
+	WorkDir                 = "example_queries"
+	SaveDir                 = "data"
+	RelationDefaultFilename = SaveDir + "\\relations.bin"
 )

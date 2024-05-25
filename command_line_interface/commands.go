@@ -27,6 +27,14 @@ var Commands = map[string]Command{
 		Usage:       "CREATE DATASET|RELATION <FILENAME>",
 		minArgCount: 3,
 	},
+	"list": {
+		Usage:       "LIST",
+		minArgCount: 1,
+	},
+	"set": {
+		Usage:       "SET WORKDIR|SAVEDIR <PATH>",
+		minArgCount: 3,
+	},
 }
 
 func IsUsageCorrect(userInput string) bool {
