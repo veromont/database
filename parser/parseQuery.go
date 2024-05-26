@@ -20,25 +20,11 @@ import (
 <Створення кортежу> ::= INSERT INTO <Ім’я таблиці> ({ <ім'я поля> тип поля, })
 VALUES ({ <значення поля>, })
 */
-func ProcessInsertion(values []map[string]string, tableName string) []map[int32]string {
-	table := SysCatalog.GetRelationByName(tableName)
-	var result []map[int32]string
-	var nameIdMap map[string]int32 = make(map[string]int32)
-	for nameKey := range values[0] {
-		for _, fieldName := range table.Fields {
-			if fieldName.Name == nameKey {
-				nameIdMap[nameKey] = fieldName.FieldId
-			}
-		}
-	}
-	for i, valueTuple := range values {
-		result[i] = make(map[int32]string)
-		for name, value := range valueTuple {
-			result[i][nameIdMap[name]] = value
-		}
-	}
-	return result
+
+func ParseInsertDatasetQuery(insertQuery string) {
+
 }
+
 func ParseInsertRecordQuery(insertQuery string) (string, []map[string]string, error) {
 	if !isQueryCorrect(Query{Text: insertQuery, Type: InsertQuery_t}) {
 		return "", nil, fmt.Errorf("query '%s' is incorrect", insertQuery)
@@ -133,8 +119,8 @@ func ParseCreateDatasetQuery(createQuery string) (*types.DsListElement, error) {
 		i++
 	}
 	memberTableName := tokens[i]
-	owner := SysCatalog.GetRelationByName(ownerTableName)
-	member := SysCatalog.GetRelationByName(memberTableName)
+	_, owner := SysCatalog.GetRelationByName(ownerTableName)
+	_, member := SysCatalog.GetRelationByName(memberTableName)
 	ds.OwnerTableInfo.Table = owner
 	ds.MemberTableInfo.Table = member
 	if owner == nil {

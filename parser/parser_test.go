@@ -1,7 +1,6 @@
 package parser
 
 import (
-	//"fmt"
 	"fmt"
 	"testing"
 )
@@ -85,12 +84,12 @@ func TestRemoveBrakets(t *testing.T) {
 	}
 }
 
-// TODO: parse strings into values properly
 func TestParseInsertQuery(t *testing.T) {
 	s := `INSERT INTO doc (vic, dic, pic)
 	VALUES (12, "1234", 56 )`
 	tableName, fields, _ := ParseInsertRecordQuery(s)
-	ProcessInsertion(fields, tableName)
+
+	// utility.ProcessInsertion(fields, tableName)
 
 	if tableName != "doc" {
 		t.Errorf("expected 3 arguments")

@@ -3,12 +3,17 @@ package recording
 import (
 	"encoding/binary"
 	"fmt"
+	"io"
 	"myDb/types"
 	"os"
 )
 
 func WriteRelationRecord(file *os.File, objectFieldValues []types.FieldValue, offset64 int64) {
-	file.Seek(offset64, 0)
+	if offset64 >= 0 {
+		file.Seek(offset64, 0)
+	} else {
+		file.Seek(0, io.SeekEnd)
+	}
 	for _, field := range objectFieldValues {
 		writeField(field, file)
 	}

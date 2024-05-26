@@ -43,6 +43,24 @@ type RelationListElement struct {
 	Relations []Relation
 }
 
+func (relListElem *RelationListElement) GetFieldTypeById(fieldId int32) *FieldType {
+	for _, fieldType := range relListElem.Type.Fields {
+		if fieldType.FieldId == fieldId {
+			return &fieldType
+		}
+	}
+	return nil
+}
+
+func (relation *Relation) GetFieldNameById(fieldId int32) *FieldName {
+	for _, fieldName := range relation.Fields {
+		if fieldName.FieldId == fieldId {
+			return &fieldName
+		}
+	}
+	return nil
+}
+
 func (relListElem *RelationListElement) ToString(delimeter string) string {
 	result := ""
 	result += "id: " + string(relListElem.Type.Id) + delimeter

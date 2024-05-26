@@ -1,5 +1,11 @@
 package types
 
+import (
+	"fmt"
+	"strconv"
+	"time"
+)
+
 // mysql types
 type DbType rune
 
@@ -31,9 +37,9 @@ const (
 )
 
 type FieldValue struct {
-    ID    int
+	ID        int
 	ValueType DbType
-    Value interface{}
+	Value     interface{}
 }
 
 var DbTypes = [...]string{
@@ -122,4 +128,56 @@ func ArrayContains(array []string, t string) bool {
 		}
 	}
 	return false
+}
+
+func ParseFieldValue(fieldValue *FieldValue, value string) error {
+	switch fieldValue.ValueType {
+	case Int_t, Tinyint_t, Smallint_t:
+		parsedValue, err := strconv.Atoi(value)
+		if err != nil {
+			return err
+		}
+		fieldValue.Value = parsedValue
+	case Bigint_t:
+		parsedValue, err := strconv.ParseInt(value, 10, 64)
+		if err != nil {
+			return err
+		}
+		fieldValue.Value = parsedValue
+	case Float_t:
+		parsedValue, err := strconv.ParseFloat(value, 32)
+		if err != nil {
+			return err
+		}
+		fieldValue.Value = float32(parsedValue)
+	case Double_t:
+		parsedValue, err := strconv.ParseFloat(value, 64)
+		if err != nil {
+			return err
+		}
+		fieldValue.Value = parsedValue
+	case Decimal_t:
+		parsedValue, err := strconv.ParseFloat(value, 64) // Simplified for example
+		if err != nil {
+			return err
+		}
+		fieldValue.Value = parsedValue
+	case Date_t, Datetime_t, Timestamp_t, Time_t:
+		parsedValue, err := time.Parse(time.RFC3339, value)
+		if err != nil {
+			return err
+		}
+		fieldValue.Value = parsedValue
+	case Year_t:
+		parsedValue, err := strconv.Atoi(value)
+		if err != nil {
+			return err
+		}
+		fieldValue.Value = parsedValue
+	case Char_t, Varchar_t, Binary_t, Text_t, Blob_t:
+		fieldValue.Value = value
+	default:
+		return fmt.Errorf("unsupported ValueType: %d", fieldValue.ValueType)
+	}
+	return nil
 }

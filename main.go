@@ -7,7 +7,9 @@ import (
 	"myDb/params"
 	"myDb/parser"
 	"myDb/procedures"
+	recording "myDb/records"
 	SysCatalog "myDb/system_catalog"
+	"myDb/utility"
 	"os"
 	"strings"
 )
@@ -126,7 +128,6 @@ func launchProgram() {
 	}
 }
 
-// TODO: add commands SELECT WORKDIR AND SELECT SAVEDIR
 func listCommands() {
 	fmt.Println("LIST. List commands")
 	fmt.Println("SAVE DATASETS|RELATIONS {FILENAME}. save objects to a given file")
@@ -134,7 +135,8 @@ func listCommands() {
 	fmt.Println("LOAD DATASETS|RELATIONS {FILENAME}. load all datasets from file")
 	fmt.Println("CREATE DATASET|RELATION {FILENAME}")
 	fmt.Println("SET SAVEDIR|WORKDIR {PATH}")
-	fmt.Println("CREATE DATASET|RELATION {FILENAME}")
+	fmt.Println("INSERT RELATION {FILENAME}")
+	fmt.Println("INSERT DATASET {FILENAME}")
 	fmt.Println("EXIT. Exit the program")
 }
 
@@ -151,7 +153,8 @@ func createRelation(filename string) {
 	}
 
 	name := elem.Relations[0].Name
-	if SysCatalog.GetRelationByName(name) != nil {
+	rle, relation := SysCatalog.GetRelationByName(name)
+	if rle != nil || relation != nil {
 		fmt.Printf("Relation with name %s already exists", name)
 		return
 	}
@@ -181,10 +184,28 @@ func createDataset(filename string) {
 	fmt.Println("Dataset was successfully created")
 }
 
-func insertRelation(filename string) {
-
+func insertRelation(filename string) error {
+	query, err := os.ReadFile(filename)
+	if err != nil {
+		return err
+	}
+	tableName, fieldValues, err := parser.ParseInsertRecordQuery(string(query))
+	rle, table := SysCatalog.GetRelationByName(tableName)
+	tuples, err := utility.ProcessInsertion(fieldValues, table, rle)
+	if err != nil {
+		return err
+	}
+	file, err := os.OpenFile(filename, os.O_RDWR, 0666)
+	for _, tuple := range tuples {
+		recording.WriteRelationRecord(file, tuple, -1)
+	}
+	fmt.Printf("Added %d tuples successfully", len(tuples))
+	return nil
 }
 
+/*
+INSERT INTO DS-NAME OWNER(KV) MEMBER(KV, KV, KV ...)
+*/
 func insertDataset(filename string) {
 
 }

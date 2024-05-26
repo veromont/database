@@ -80,7 +80,7 @@ func LoadDatasets(filename string) []types.DsListElement {
 
 		ownerTableNameLen := readInt32(file)
 		ownerTableName := readFixedSizeString(file, ownerTableNameLen)
-		ownerRelation := SysCatalog.GetRelationByName(ownerTableName)
+		_, ownerRelation := SysCatalog.GetRelationByName(ownerTableName)
 		if ownerRelation == nil {
 			fmt.Printf("relation with name %s doesn`t exist", ownerTableName)
 			return nil
@@ -94,7 +94,7 @@ func LoadDatasets(filename string) []types.DsListElement {
 
 		memberTableNameLen := readInt32(file)
 		memberTableName := readFixedSizeString(file, memberTableNameLen)
-		memberRelation := SysCatalog.GetRelationByName(memberTableName)
+		_, memberRelation := SysCatalog.GetRelationByName(memberTableName)
 		if memberRelation == nil {
 			fmt.Printf("relation with name %s doesn`t exist", memberTableName)
 			return nil
