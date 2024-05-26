@@ -9,6 +9,7 @@ import (
 	"myDb/procedures"
 	recording "myDb/records"
 	SysCatalog "myDb/system_catalog"
+	"myDb/types"
 	"myDb/utility"
 	"os"
 	"strings"
@@ -203,11 +204,21 @@ func insertRelation(filename string) error {
 	return nil
 }
 
-/*
-INSERT INTO DS-NAME OWNER(KV) MEMBER(KV, KV, KV ...)
-*/
-func insertDataset(filename string) {
-
+func insertDataset(filename string) error {
+	query, err := os.ReadFile(filename)
+	if err != nil {
+		return err
+	}
+	dsName, kValues, err := parser.ParseInsertDatasetQuery(string(query))
+	if err != nil {
+		return err
+	}
+	ds := SysCatalog.GetDatasetByName(dsName)
+	newDs := *types.NewDataset()
+	newDs.OwnerKV = kValues[0]
+	newDs.MemberKVs = kValues[1:]
+	ds.Datasets = append(ds.Datasets, newDs)
+	return nil
 }
 
 func setWorkdir(pathToDir string) {

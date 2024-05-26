@@ -21,12 +21,36 @@ import (
 VALUES ({ <значення поля>, })
 */
 
-func ParseInsertDatasetQuery(insertQuery string) {
+/*
+INSERT INTO DS_NAME OWNER(KV) MEMBER(KV, KV, KV ...)
+*/
+func ParseInsertDatasetQuery(insertQuery string) (string, []string, error) {
+	if !isQueryCorrect(Query{Text: insertQuery, Type: InsertDatasetQuery_t}) {
+		return "", nil, fmt.Errorf("query '%s' is incorrect", insertQuery)
+	}
+	tokens, err := getStringsOfRegex(insertQuery, tokenRegex)
+	if err != nil || len(tokens) < 6 {
+		return "", nil, fmt.Errorf("error when parsing query '%s'", insertQuery)
+	}
+	dsName := tokens[2]
+	removeBrackets(&tokens[4])
+	removeBrackets(&tokens[6])
+	ownerKv := tokens[4]
 
+	mkvList := utility.RemoveWhitespaces(tokens[6])
+	mkvs := strings.Split(mkvList, ",")
+
+	kValues := make([]string, len(mkvs)+1)
+	kValues[0] = ownerKv
+	for i, mkv := range mkvs {
+		kValues[i+1] = mkv
+	}
+
+	return dsName, kValues, nil
 }
 
 func ParseInsertRecordQuery(insertQuery string) (string, []map[string]string, error) {
-	if !isQueryCorrect(Query{Text: insertQuery, Type: InsertQuery_t}) {
+	if !isQueryCorrect(Query{Text: insertQuery, Type: InsertRecordQuery_t}) {
 		return "", nil, fmt.Errorf("query '%s' is incorrect", insertQuery)
 	}
 	tokens, err := getStringsOfRegex(insertQuery, tokenRegex)

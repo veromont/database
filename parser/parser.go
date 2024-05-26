@@ -17,13 +17,15 @@ type QueryType int32
 
 const (
 	CreateQuery_t QueryType = iota
-	InsertQuery_t
+	InsertRecordQuery_t
+	InsertDatasetQuery_t
 	Misc_t //Error type
 )
 
 const (
 	createQueryRegex = iota
-	insertQueryRegex
+	insertRecordQueryRegex
+	insertDatasetRegex
 	identifierRegex
 	bracketRegex
 	tokenRegex
@@ -34,13 +36,13 @@ var actions = `(CREATE|ALTER|DELETE)`
 var objects = `(RELATION|DATASET)`
 
 var regexMap = map[int]string{
-	createQueryRegex: `(?im)` + actions + `(\s+)` + objects + `(\s+)[a-zA-Z]\w*(\s+)\((?s).*\)`,
-	insertQueryRegex: `INSERT\s+INTO\s+\w+\s*\(\w+(,\s*\w+)*\)\s+VALUES\s*\(.+\)`,
-
-	identifierRegex: `[a-zA-Z]\w*`,
-	bracketRegex:    `\((?s).*\)`,
-	tokenRegex:      `[a-zA-Z]\w*|\((?s).*?\)`,
-	sizeOfTypeRegex: `\([1-9]\d*\)`,
+	createQueryRegex:       `(?im)` + actions + `(\s+)` + objects + `(\s+)[a-zA-Z]\w*(\s+)\((?s).*\)`,
+	insertRecordQueryRegex: `INSERT\s+INTO\s+\w+\s*\(\w+(,\s*\w+)*\)\s+VALUES\s*\(.+\)`,
+	insertDatasetRegex:     `INSERT\s+INTO\s+\w+\s+OWNER\s*\(\w+\)\s+MEMBER\s*\(\w+(,\s*\w+)*\)`,
+	identifierRegex:        `[a-zA-Z]\w*`,
+	bracketRegex:           `\((?s).*\)`,
+	tokenRegex:             `[a-zA-Z]\w*|\((?s).*?\)`,
+	sizeOfTypeRegex:        `\([1-9]\d*\)`,
 }
 
 func isQueryCorrect(query Query) bool {

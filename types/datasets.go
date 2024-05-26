@@ -33,3 +33,7 @@ func boolToString(t bool) string {
 	}
 	return "false"
 }
+
+func NewDataset() *Dataset {
+	return &Dataset{OwnerKV: "", MemberKVs: make([]string, 0), TupleNumber: 0}
+}
