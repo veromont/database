@@ -28,7 +28,6 @@ func acceptUserInput(message string) (string, error) {
 	scanner := bufio.NewScanner(os.Stdin)
 	if scanner.Scan() {
 		line = scanner.Text()
-		fmt.Printf("Input was: %q\n", line)
 	}
 
 	return line, nil
@@ -46,11 +45,11 @@ func launchProgram() {
 		command = strings.ToLower(command)
 		object = strings.ToLower(object)
 		if !CLI.CommandExists(command) {
-			fmt.Printf("Command %s is illegal, use something from this:", command)
+			fmt.Printf("Команди %s не існує, спробуйте одну з цих:\n", command)
 			listCommands()
 		}
 		if !CLI.IsUsageCorrect(input) {
-			fmt.Printf("Usage of command %s is: %s\n", command, CLI.Commands[command].Usage)
+			fmt.Printf("Некоректно використано команду %s, правильно так:\n %s\n", command, CLI.Commands[command].Usage)
 			continue
 		}
 
@@ -67,7 +66,7 @@ func launchProgram() {
 			case "relation":
 				createRelation(filename)
 			}
-			fmt.Printf("\nSelected: Execute %s query for %s file with path '%s'\n", command, object, filename)
+			fmt.Printf("\nВибрано: Виконати %s запит для %s файлу зі шляхом '%s'\n", command, object, filename)
 
 		case "save":
 			filename = params.SaveDir + "\\" + filename
@@ -77,7 +76,7 @@ func launchProgram() {
 			case "relations":
 				procedures.SaveAllRelationsBin(SysCatalog.Relations, filename)
 			}
-			fmt.Printf("Selected: Execute %s query for %s file with path '%s'\n", command, object, filename)
+			fmt.Printf("\nВибрано: Виконати %s запит для %s файлу зі шляхом '%s'\n", command, object, filename)
 
 		case "print":
 			switch object {
@@ -98,17 +97,16 @@ func launchProgram() {
 					fmt.Print(relation.ToString("\n"))
 				}
 			}
-			fmt.Printf("Selected: Execute %s query for %s\n", command, object)
-
+			fmt.Printf("\nВибрано: Виконати %s запит для %s \n", command, object)
 		case "load":
 			filename = params.SaveDir + "\\" + filename
 			switch object {
 			case "datasets":
-				SysCatalog.Relations = procedures.LoadRelationListElements(filename)
-			case "relations":
 				SysCatalog.Datasets = procedures.LoadDatasets(filename)
+			case "relations":
+				SysCatalog.Relations = procedures.LoadRelationListElements(filename)
 			}
-			fmt.Printf("Selected: Execute %s query for %s file with path '%s'\n", command, object, filename)
+			fmt.Printf("\nВибрано: Виконати %s запит для %s файлу зі шляхом '%s'\n", command, object, filename)
 
 		case "set":
 			switch object {
@@ -117,28 +115,36 @@ func launchProgram() {
 			case "savedir":
 				setSaveDir(filename)
 			}
-			fmt.Printf("Selected: Execute %s query for %s directory with path '%s'\n", command, object, filename)
+			fmt.Printf("\nВибрано: Виконати %s запит для %s файлу зі шляхом '%s'\n", command, object, filename)
+
+		case "savedir":
+			fmt.Printf("savedir: %s", params.SaveDir)
+
+		case "workdir":
+			fmt.Printf("workdir: %s", params.WorkDir)
 
 		case "exit":
 			fmt.Println("Selected: Exit the program")
 			os.Exit(0)
 
 		default:
-			fmt.Println("Invalid choice. Please enter a valid option.")
+			fmt.Println("Некоректна команда, спробуйте іншу")
 		}
+		fmt.Println()
 	}
 }
 
 func listCommands() {
-	fmt.Println("LIST. List commands")
-	fmt.Println("SAVE DATASETS|RELATIONS {FILENAME}. save objects to a given file")
-	fmt.Println("PRINT DATASETS|RELATIONS. print all relations")
-	fmt.Println("LOAD DATASETS|RELATIONS {FILENAME}. load all datasets from file")
-	fmt.Println("CREATE DATASET|RELATION {FILENAME}")
-	fmt.Println("SET SAVEDIR|WORKDIR {PATH}")
-	fmt.Println("INSERT RELATION {FILENAME}")
-	fmt.Println("INSERT DATASET {FILENAME}")
-	fmt.Println("EXIT. Exit the program")
+	fmt.Println("LIST. Список команд")
+	fmt.Println("SAVE DATASETS|RELATIONS {FILENAME}. зберегти об'єкти у вказаний файл")
+	fmt.Println("PRINT DATASETS|RELATIONS. надрукувати всі відношення")
+	fmt.Println("LOAD DATASETS|RELATIONS {FILENAME}. завантажити всі набори даних з файлу")
+	fmt.Println("CREATE DATASET|RELATION {FILENAME}. створити набір даних або відношення")
+	fmt.Println("SET SAVEDIR|WORKDIR {PATH}. встановити директорію для збереження або робочу директорію")
+	fmt.Println("SAVEDIR|WORKDIR. показати відповідну встановлену директорію")
+	fmt.Println("INSERT RELATION {FILENAME}. вставити відношення з файлу")
+	fmt.Println("INSERT DATASET {FILENAME}. вставити набір даних з файлу")
+	fmt.Println("EXIT. Вихід з програми")
 }
 
 func createRelation(filename string) {
@@ -156,11 +162,11 @@ func createRelation(filename string) {
 	name := elem.Relations[0].Name
 	rle, relation := SysCatalog.GetRelationByName(name)
 	if rle != nil || relation != nil {
-		fmt.Printf("Relation with name %s already exists", name)
+		fmt.Printf("Таблиця '%s' уже існує", name)
 		return
 	}
 	SysCatalog.Relations = append(SysCatalog.Relations, *elem)
-	fmt.Println("Relation was successfully created")
+	fmt.Println("таблицю успішно створено")
 }
 
 func createDataset(filename string) {
@@ -177,12 +183,12 @@ func createDataset(filename string) {
 
 	name := elem.Name
 	if SysCatalog.GetDatasetByName(name) != nil {
-		fmt.Printf("Dataset with name %s already exists", name)
+		fmt.Printf("Набір даних під назвою '%s' уже існує\n", name)
 		return
 	}
 
 	SysCatalog.Datasets = append(SysCatalog.Datasets, *elem)
-	fmt.Println("Dataset was successfully created")
+	fmt.Printf("набір даних '%s' успішно створено\n", name)
 }
 
 func insertRelation(filename string) error {

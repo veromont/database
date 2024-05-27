@@ -1,0 +1,7 @@
+create relation create_relation\create_books.txt
+create relation create_relation\create_chapters.txt
+create relation create_relation\create_users.txt
+
+create dataset create_dataset\create_books-chapters.txt
+create dataset create_dataset\create_followers.txt
+create dataset create_dataset\create_likes.txt

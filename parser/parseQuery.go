@@ -126,32 +126,39 @@ func ParseCreateDatasetQuery(createQuery string) (*types.DsListElement, error) {
 	if err != nil {
 		return nil, err
 	}
-	i := 1
-	if tokens[0] == "" {
-		i++
+
+	var ownerName string
+	var memberName string
+
+	for i, token := range tokens {
+
+		if token == "SET" {
+			ds.Name = tokens[i+1]
+		} else if token == "OWNER" {
+			ds.OwnerTableInfo.IsSingle = tokens[i+1] == "SINGLE"
+			if ds.OwnerTableInfo.IsSingle {
+				i++
+			}
+			ownerName = tokens[i+1]
+			_, ownerTable := SysCatalog.GetRelationByName(ownerName)
+			ds.OwnerTableInfo.Table = ownerTable
+		} else if token == "MEMBER" {
+			ds.MemberTableInfo.IsSingle = tokens[i+1] == "SINGLE"
+			if ds.MemberTableInfo.IsSingle {
+				i++
+			}
+			memberName = tokens[i+1]
+			_, memberTable := SysCatalog.GetRelationByName(memberName)
+
+			ds.MemberTableInfo.Table = memberTable
+		}
 	}
-	ds.Name = tokens[i]
-	i += 3
-	if tokens[i] == "SINGLE" {
-		ds.OwnerTableInfo.IsSingle = true
-		i++
+
+	if ds.OwnerTableInfo.Table == nil {
+		return nil, fmt.Errorf("таблицю %s не знайдено", ownerName)
 	}
-	ownerTableName := tokens[i]
-	i += 2
-	if tokens[i] == "SINGLE" {
-		ds.MemberTableInfo.IsSingle = true
-		i++
-	}
-	memberTableName := tokens[i]
-	_, owner := SysCatalog.GetRelationByName(ownerTableName)
-	_, member := SysCatalog.GetRelationByName(memberTableName)
-	ds.OwnerTableInfo.Table = owner
-	ds.MemberTableInfo.Table = member
-	if owner == nil {
-		return nil, fmt.Errorf("table with name '%s' wasn`t found", ownerTableName)
-	}
-	if member == nil {
-		return nil, fmt.Errorf("table with name '%s' wasn`t found", ownerTableName)
+	if ds.MemberTableInfo.Table == nil {
+		return nil, fmt.Errorf("таблицю %s не знайдено", memberName)
 	}
 	return &ds, nil
 }

@@ -35,6 +35,14 @@ var Commands = map[string]Command{
 		Usage:       "SET WORKDIR|SAVEDIR <PATH>",
 		minArgCount: 3,
 	},
+	"savedir": {
+		Usage:       "SAVEDIR",
+		minArgCount: 1,
+	},
+	"workdir": {
+		Usage:       "WORKDIR",
+		minArgCount: 1,
+	},
 }
 
 func IsUsageCorrect(userInput string) bool {

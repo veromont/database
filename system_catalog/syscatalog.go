@@ -14,15 +14,15 @@ func NewDB() {
 	Datasets = make([]types.DsListElement, 0)
 }
 
-func GetRelationByName(name string) *types.Relation {
+func GetRelationByName(name string) (*types.RelationListElement, *types.Relation) {
 	for _, rle := range Relations {
 		for _, relation := range rle.Relations {
 			if relation.Name == name {
-				return &relation
+				return &rle, &relation
 			}
 		}
 	}
-	return nil
+	return nil, nil
 }
 
 func GetDatasetByName(name string) *types.DsListElement {
