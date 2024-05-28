@@ -29,7 +29,9 @@ const (
 	identifierRegex
 	bracketRegex
 	tokenRegex
+	greedyTokenRegex
 	sizeOfTypeRegex
+	fieldValueRegex
 )
 
 var actions = `(CREATE|ALTER|DELETE)`
@@ -37,12 +39,14 @@ var objects = `(RELATION|DATASET)`
 
 var regexMap = map[int]string{
 	createQueryRegex:       `(?im)` + actions + `(\s+)` + objects + `(\s+)[a-zA-Z]\w*(\s+)\((?s).*\)`,
-	insertRecordQueryRegex: `INSERT\s+INTO\s+\w+\s*\(\w+(,\s*\w+)*\)\s+VALUES\s*\(.+\)`,
+	insertRecordQueryRegex: `INSERT\s+INTO\s+\w+\s*\(.+?\)\s+VALUES\s*\(.+?\)`,
 	insertDatasetRegex:     `INSERT\s+INTO\s+\w+\s+OWNER\s*\(\w+\)\s+MEMBER\s*\(\w+(,\s*\w+)*\)`,
 	identifierRegex:        `[a-zA-Z]\w*`,
 	bracketRegex:           `\((?s).*\)`,
 	tokenRegex:             `[a-zA-Z]\w*|\((?s).*?\)`,
+	greedyTokenRegex:       `[a-zA-Z]\w*|\((?s).*\)`,
 	sizeOfTypeRegex:        `\([1-9]\d*\)`,
+	fieldValueRegex:        `\".*?\"`,
 }
 
 func isQueryCorrect(query Query) bool {
@@ -71,8 +75,8 @@ func getStringsOfRegex(stringLiteral string, regexType int) ([]string, error) {
 
 func removeBrackets(token *string) {
 	if len(*token) >= 2 &&
-		(*token)[0] == '(' &&
-		(*token)[len(*token)-1] == ')' {
+		((*token)[0] == '(' && (*token)[len(*token)-1] == ')' ||
+			(*token)[0] == '"' && (*token)[len(*token)-1] == '"') {
 		*token = (*token)[1 : len(*token)-1]
 	}
 }

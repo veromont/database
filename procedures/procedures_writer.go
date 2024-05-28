@@ -4,11 +4,11 @@ import (
 	"encoding/binary"
 	"io"
 
-	//SysCatalog "myDb/system_catalog"
+	SysCatalog "myDb/system_catalog"
 	"myDb/types"
 	"myDb/utility"
 	"os"
-	//"sort"
+	"sort"
 )
 
 func SaveAllRelationsBin(relationListElements []types.RelationListElement, filename string) {
@@ -18,7 +18,7 @@ func SaveAllRelationsBin(relationListElements []types.RelationListElement, filen
 	defer file.Close()
 
 	// store with smallest first
-	// sort.Sort(SysCatalog.RelationListSort(relationListElements))
+	sort.Sort(SysCatalog.RelationListSort(relationListElements))
 
 	var offset int32 = 0
 	for i, relListElem := range relationListElements {

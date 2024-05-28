@@ -41,8 +41,8 @@ func writeField(field types.FieldValue, file *os.File) {
 		}
 
 	case types.Smallint_t:
-		if v, ok := field.Value.(int16); ok {
-			err := binary.Write(file, binary.LittleEndian, v)
+		if v, ok := field.Value.(int); ok {
+			err := binary.Write(file, binary.LittleEndian, int16(v))
 			if err != nil {
 				panic(err)
 			}
@@ -52,8 +52,8 @@ func writeField(field types.FieldValue, file *os.File) {
 		}
 
 	case types.Int_t:
-		if v, ok := field.Value.(int32); ok {
-			err := binary.Write(file, binary.LittleEndian, v)
+		if v, ok := field.Value.(int); ok {
+			err := binary.Write(file, binary.LittleEndian, int32(v))
 			if err != nil {
 				panic(err)
 			}

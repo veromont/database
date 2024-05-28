@@ -1,5 +1,5 @@
 CREATE RELATION chapters (
 		id# int,
-		title varchar(25)
+		title varchar(25),
 		content varchar(100000)
 )

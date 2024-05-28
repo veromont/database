@@ -17,7 +17,7 @@ import (
 )
 якщо поле primary key в кінець ім'я додається #. В таблиці лише 1 primary key
 
-<Створення кортежу> ::= INSERT INTO <Ім’я таблиці> ({ <ім'я поля> тип поля, })
+<Створення кортежу> ::= INSERT INTO <Ім’я таблиці> ({ <ім'я поля>, })
 VALUES ({ <значення поля>, })
 */
 
@@ -85,7 +85,7 @@ func ParseCreateRelationQuery(createQuery string) (*types.RelationListElement, e
 	relationListElement := types.NewRelationListElement()
 	relation := types.NewRelation()
 
-	tokens, err := getStringsOfRegex(createQuery, tokenRegex)
+	tokens, err := getStringsOfRegex(createQuery, greedyTokenRegex)
 	if err != nil || len(tokens) < 4 {
 		return nil, fmt.Errorf("error when parsing query '%s'", createQuery)
 	}
@@ -105,7 +105,7 @@ func ParseCreateRelationQuery(createQuery string) (*types.RelationListElement, e
 		relationListElement.Type.Fields = append(relationListElement.Type.Fields, *fieldType)
 	}
 	relation.RecordsCount = 0
-	relation.DataFileName = relation.Name + "_table"
+	relation.DataFileName = relation.Name + "_table.bin"
 
 	relationListElement.Relations = append(relationListElement.Relations, *relation)
 	return relationListElement, nil
@@ -216,9 +216,11 @@ func parseFieldToken(fieldToken string, fieldId int32) (*types.FieldType, *types
 }
 
 func parseInsertTupleBrackets(fieldNames []string, tupleBracketString string) (map[string]string, error) {
-	removeBrackets(&tupleBracketString)
-	tupleBracketString = utility.RemoveWhitespaces(tupleBracketString)
-	values := strings.Split(tupleBracketString, ",")
+	// tupleBracketString = utility.RemoveWhitespaces(tupleBracketString)
+	values, err := getStringsOfRegex(tupleBracketString, fieldValueRegex)
+	if err != nil {
+		return nil, err
+	}
 
 	if len(values) != len(fieldNames) {
 		return nil,
@@ -228,6 +230,7 @@ func parseInsertTupleBrackets(fieldNames []string, tupleBracketString string) (m
 
 	var res map[string]string = make(map[string]string)
 	for i, v := range values {
+		removeBrackets(&v)
 		res[fieldNames[i]] = v
 	}
 	return res, nil

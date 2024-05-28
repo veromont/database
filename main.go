@@ -108,6 +108,25 @@ func launchProgram() {
 			}
 			fmt.Printf("\nВибрано: Виконати %s запит для %s файлу зі шляхом '%s'\n", command, object, filename)
 
+		case "insert":
+			filename = params.WorkDir + "\\" + filename
+			switch object {
+			case "dataset":
+				err := insertDataset(filename)
+				if err == nil {
+					fmt.Print("Запис додано успішно")
+				} else {
+					fmt.Printf("Сталася помилка: %s", err.Error())
+				}
+			case "relation":
+				err := insertRelation(filename)
+				if err == nil {
+					fmt.Print("Запис додано успішно")
+				} else {
+					fmt.Printf("Сталася помилка: %s", err.Error())
+				}
+			}
+
 		case "set":
 			switch object {
 			case "workdir":
@@ -197,16 +216,20 @@ func insertRelation(filename string) error {
 		return err
 	}
 	tableName, fieldValues, err := parser.ParseInsertRecordQuery(string(query))
+	if err != nil {
+		return err
+	}
 	rle, table := SysCatalog.GetRelationByName(tableName)
 	tuples, err := utility.ProcessInsertion(fieldValues, table, rle)
 	if err != nil {
 		return err
 	}
+	filename = params.SaveDir + "\\" + table.DataFileName
 	file, err := os.OpenFile(filename, os.O_RDWR, 0666)
 	for _, tuple := range tuples {
 		recording.WriteRelationRecord(file, tuple, -1)
 	}
-	fmt.Printf("Added %d tuples successfully", len(tuples))
+	fmt.Printf("Додано %d записів\n", len(tuples))
 	return nil
 }
 

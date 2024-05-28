@@ -43,6 +43,10 @@ var Commands = map[string]Command{
 		Usage:       "WORKDIR",
 		minArgCount: 1,
 	},
+	"insert": {
+		Usage:       "INSERT DATASET|RELATION <FILENAME>",
+		minArgCount: 3,
+	},
 }
 
 func IsUsageCorrect(userInput string) bool {
