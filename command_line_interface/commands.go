@@ -27,6 +27,10 @@ var Commands = map[string]Command{
 		Usage:       "CREATE DATASET|RELATION <FILENAME>",
 		minArgCount: 3,
 	},
+	"delete": {
+		Usage:       "DELETE DATASET|RELATION <OBJECT NAME>",
+		minArgCount: 3,
+	},
 	"list": {
 		Usage:       "LIST",
 		minArgCount: 1,

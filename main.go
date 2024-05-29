@@ -82,19 +82,23 @@ func launchProgram() {
 			switch object {
 			case "datasets":
 				if len(SysCatalog.Datasets) == 0 {
-					fmt.Println("No datasets in memory yet, need to create or load some")
+					fmt.Printf("Кількість наборів даних: %d\n", len(SysCatalog.Datasets))
+					fmt.Println("Жодного набору даних ще не створено, неможливо презентувати")
 					continue
 				}
 				for _, dataset := range SysCatalog.Datasets {
 					fmt.Print(dataset.ToString("\n"))
+					fmt.Print("\n\n\n")
 				}
 			case "relations":
 				if len(SysCatalog.Relations) == 0 {
-					fmt.Println("No relations in memory yet, need to create or load some")
+					fmt.Println("Жодного набору даних ще не створено, неможливо презентувати")
 					continue
 				}
+				fmt.Printf("Кількість таблиць: %d\n", len(SysCatalog.Relations))
 				for _, relation := range SysCatalog.Relations {
 					fmt.Print(relation.ToString("\n"))
+					fmt.Print("\n\n\n")
 				}
 			}
 			fmt.Printf("\nВибрано: Виконати %s запит для %s \n", command, object)
@@ -125,6 +129,14 @@ func launchProgram() {
 				} else {
 					fmt.Printf("Сталася помилка: %s", err.Error())
 				}
+			}
+
+		case "delete":
+			switch object {
+			case "dataset":
+				deleteDataset(filename)
+			case "relation":
+				deleteRelation(filename)
 			}
 
 		case "set":
@@ -185,7 +197,7 @@ func createRelation(filename string) {
 		return
 	}
 	SysCatalog.Relations = append(SysCatalog.Relations, *elem)
-	fmt.Println("таблицю успішно створено")
+	fmt.Printf("таблицю %s успішно створено, нова кількість таблиць - %d\n", name, len(SysCatalog.Relations))
 }
 
 func createDataset(filename string) {
@@ -207,7 +219,7 @@ func createDataset(filename string) {
 	}
 
 	SysCatalog.Datasets = append(SysCatalog.Datasets, *elem)
-	fmt.Printf("набір даних '%s' успішно створено\n", name)
+	fmt.Printf("набір даних '%s' успішно створено, нова кількість наборів даних - %d\n", name, len(SysCatalog.Datasets))
 }
 
 func insertRelation(filename string) error {
@@ -226,6 +238,10 @@ func insertRelation(filename string) error {
 	}
 	filename = params.SaveDir + "\\" + table.DataFileName
 	file, err := os.OpenFile(filename, os.O_RDWR, 0666)
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
 	for _, tuple := range tuples {
 		recording.WriteRelationRecord(file, tuple, -1)
 	}
@@ -248,6 +264,24 @@ func insertDataset(filename string) error {
 	newDs.MemberKVs = kValues[1:]
 	ds.Datasets = append(ds.Datasets, newDs)
 	return nil
+}
+
+func deleteRelation(name string) {
+	err := SysCatalog.DeleteRelationByName(name)
+	if err != nil {
+		fmt.Println(err.Error())
+	} else {
+		fmt.Printf("таблицю %s видалено успішно, нова кількість таблиць: %d", name, len(SysCatalog.Relations))
+	}
+}
+
+func deleteDataset(name string) {
+	err := SysCatalog.DeleteDatasetByName(name)
+	if err != nil {
+		fmt.Println(err.Error())
+	} else {
+		fmt.Printf("набір даних %s видалено успішно, нова кількість наборів даних: %d", name, len(SysCatalog.Relations))
+	}
 }
 
 func setWorkdir(pathToDir string) {
