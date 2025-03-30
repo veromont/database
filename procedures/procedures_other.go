@@ -11,7 +11,6 @@ import (
 	"io"
 	"myDb/types"
 	"os"
-	"strconv"
 )
 
 // NOTE: i can just use size instead of relListElem
@@ -70,23 +69,6 @@ func CalcRow(table *types.Relation, kv string, relListElem *types.RelationListEl
 		file.Seek(int64(nextRowAddress), io.SeekStart)
 	}
 	return -1
-}
-
-// for test and demonstration purpose, OUTDATED
-func saveAllRelationsTxt(relationListElements []types.RelationListElement, filename string) {
-	//open file
-	file, err := os.OpenFile(filename, os.O_RDWR, 0666)
-	panicError(err)
-	defer file.Close()
-
-	const DELIMETER = "\n"
-	var offset int = 0
-	for _, relationListElement := range relationListElements {
-		relationListElementString := relationListElement.ToString(DELIMETER)
-		offset += len(relationListElementString) + 4
-		relationListElementString = strconv.Itoa(offset) + DELIMETER + relationListElementString
-		file.WriteString(relationListElementString)
-	}
 }
 
 func panicError(err error) {

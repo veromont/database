@@ -8,11 +8,11 @@ import (
 type RelationListSort []types.RelationListElement
 
 var Relations []types.RelationListElement
-var Datasets []types.DsListElement
+var Datasets []types.Dataset
 
 func NewDB() {
 	Relations = make([]types.RelationListElement, 0)
-	Datasets = make([]types.DsListElement, 0)
+	Datasets = make([]types.Dataset, 0)
 }
 
 func GetRelationByName(name string) (*types.RelationListElement, *types.Relation) {
@@ -26,7 +26,7 @@ func GetRelationByName(name string) (*types.RelationListElement, *types.Relation
 	return nil, nil
 }
 
-func GetDatasetByName(name string) *types.DsListElement {
+func GetDatasetByName(name string) *types.Dataset {
 	for _, ds := range Datasets {
 		if ds.Name == name {
 			return &ds
@@ -69,7 +69,7 @@ func DeleteDatasetByName(name string) error {
 	return fmt.Errorf("набір даних %s не видалено, помилка: набір даних не знайдено", name)
 }
 
-func isDatasetDependency(relation types.Relation) *types.DsListElement {
+func isDatasetDependency(relation types.Relation) *types.Dataset {
 	for _, ds := range Datasets {
 		if ds.OwnerTableInfo.Table.Name == relation.Name || ds.MemberTableInfo.Table.Name == relation.Name {
 			return &ds

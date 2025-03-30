@@ -1,7 +1,6 @@
 CREATE RELATION books (
 		id# int,
-		title varchar(25)
+		title varchar(25),
 		description varchar(100)
-		creation_date datetime?
 )
 

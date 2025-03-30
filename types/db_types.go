@@ -42,6 +42,10 @@ type FieldValue struct {
 	Value     interface{}
 }
 
+type Record struct {
+	Fields []FieldValue `json:"fields"`
+}
+
 var DbTypes = [...]string{
 	// String types
 	"char",
@@ -163,7 +167,7 @@ func ParseFieldValue(fieldValue *FieldValue, value string) error {
 		}
 		fieldValue.Value = parsedValue
 	case Date_t, Datetime_t, Timestamp_t, Time_t:
-		parsedValue, err := time.Parse(time.RFC3339, value)
+		parsedValue, err := time.Parse("2006-01-02 15:04:05", value)
 		if err != nil {
 			return err
 		}

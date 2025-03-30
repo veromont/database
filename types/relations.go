@@ -61,6 +61,15 @@ func (relation *Relation) GetFieldNameById(fieldId int32) *FieldName {
 	return nil
 }
 
+func (relation *Relation) GetPKField() *FieldName {
+	for _, fieldName := range relation.Fields {
+		if fieldName.Key == PrimaryKey {
+			return &fieldName
+		}
+	}
+	return nil
+}
+
 func (relListElem *RelationListElement) ToString(delimeter string) string {
 	result := ""
 	result += "id: " + string(relListElem.Type.Id) + delimeter

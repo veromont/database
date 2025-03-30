@@ -54,7 +54,6 @@ func TestRelationCreationAndReading(t *testing.T) {
 	relationListElements = append(relationListElements, *el2)
 	relationListElements = append(relationListElements, *el3)
 
-	saveAllRelationsTxt(relationListElements, "relations_test.txt")
 	SaveAllRelationsBin(relationListElements, "relations_test.bin")
 
 	res := LoadRelationListElements("relations_test.bin")

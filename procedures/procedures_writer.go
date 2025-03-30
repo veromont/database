@@ -44,7 +44,7 @@ func InsertRelation(tuple map[int]string, table *types.Relation) {
 
 }
 
-func SaveAllDatasetsBin(dsRecords []types.DsListElement, filename string) {
+func SaveAllDatasetsBin(dsRecords []types.Dataset, filename string) {
 	utility.CreateFileIfNotExists(filename)
 	file, err := os.OpenFile(filename, os.O_RDWR, 0666)
 	panicError(err)
@@ -110,7 +110,7 @@ func writeRelationToFile(file *os.File, offset int32, relListElem types.Relation
 	return newOffset
 }
 
-func writeDSToFile(file *os.File, offset int32, dsRecord types.DsListElement, isLast bool) int32 {
+func writeDSToFile(file *os.File, offset int32, dsRecord types.Dataset, isLast bool) int32 {
 	offset64 := int64(offset)
 	_, err := file.Seek(offset64, 0)
 	panicError(err)
@@ -123,12 +123,12 @@ func writeDSToFile(file *os.File, offset int32, dsRecord types.DsListElement, is
 	binary.Write(file, binary.LittleEndian, int32(len(dsRecord.OwnerTableInfo.Table.Name)))
 	binary.Write(file, binary.LittleEndian, []byte(dsRecord.OwnerTableInfo.Table.Name))
 
-	binary.Write(file, binary.LittleEndian, int32(len(dsRecord.Datasets)))
-	for _, ds := range dsRecord.Datasets {
+	binary.Write(file, binary.LittleEndian, int32(len(*dsRecord.DatasetElements)))
+	for _, ds := range *dsRecord.DatasetElements {
 		binary.Write(file, binary.LittleEndian, int32(len(ds.OwnerKV)))
 		binary.Write(file, binary.LittleEndian, []byte(ds.OwnerKV))
-		binary.Write(file, binary.LittleEndian, int32(len(ds.MemberKVs)))
-		for _, mkv := range ds.MemberKVs {
+		binary.Write(file, binary.LittleEndian, int32(len(*ds.MemberKVs)))
+		for _, mkv := range *ds.MemberKVs {
 			binary.Write(file, binary.LittleEndian, int32(len(mkv)))
 			binary.Write(file, binary.LittleEndian, []byte(mkv))
 		}
@@ -136,8 +136,6 @@ func writeDSToFile(file *os.File, offset int32, dsRecord types.DsListElement, is
 
 	binary.Write(file, binary.LittleEndian, int32(len(dsRecord.MemberTableInfo.Table.Name)))
 	binary.Write(file, binary.LittleEndian, []byte(dsRecord.MemberTableInfo.Table.Name))
-
-	binary.Write(file, binary.LittleEndian, int32(len(dsRecord.Datasets)))
 
 	length, err := file.Seek(0, io.SeekCurrent)
 	panicError(err)

@@ -1,0 +1,45 @@
+create relation create_relation\create_books.txt
+create relation create_relation\create_chapters.txt
+create relation create_relation\create_users.txt
+
+create dataset create_dataset\create_books-chapters.txt
+create dataset create_dataset\create_followers.txt
+create dataset create_dataset\create_likes.txt
+
+save relations 1.bin
+load relations 1.bin
+
+save datasets 2.bin
+load datasets 2.bin
+
+insert relation insert_relation\insert_chapter.txt
+create dataset create_dataset\create_followers.txt
+load datasets 2.bin
+
+
+load relations 1.bin
+insert relation insert_relation\insert_users\insert_user1.txt
+insert relation insert_relation\insert_users\insert_user2.txt
+insert relation insert_relation\insert_users\insert_user3.txt
+insert relation insert_relation\insert_users\insert_user4.txt
+insert relation insert_relation\insert_users\insert_user5.txt
+insert relation insert_relation\insert_users\insert_user6.txt
+
+
+load relations 1.bin
+load datasets 2.bin
+execute proc.txt
+
+
+load relations 1.bin
+load datasets 2.bin
+insert relation insert_relation\insert_chapter.txt
+insert relation insert_relation\insert_book.txt
+insert relation insert_relation\insert_book1.txt
+
+create dataset create_dataset\create_books-chapters.txt
+
+execute proc1.txt
+save datasets 2.bin
+load datasets 2.bin
+print datasets

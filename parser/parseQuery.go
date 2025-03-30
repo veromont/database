@@ -50,9 +50,9 @@ func ParseInsertDatasetQuery(insertQuery string) (string, []string, error) {
 }
 
 func ParseInsertRecordQuery(insertQuery string) (string, []map[string]string, error) {
-	if !isQueryCorrect(Query{Text: insertQuery, Type: InsertRecordQuery_t}) {
-		return "", nil, fmt.Errorf("query '%s' is incorrect", insertQuery)
-	}
+	// if !isQueryCorrect(Query{Text: insertQuery, Type: InsertRecordQuery_t}) {
+	// 	return "", nil, fmt.Errorf("query '%s' is incorrect", insertQuery)
+	// }
 	tokens, err := getStringsOfRegex(insertQuery, tokenRegex)
 	if err != nil || len(tokens) < 6 {
 		return "", nil, fmt.Errorf("error when parsing query '%s'", insertQuery)
@@ -105,7 +105,7 @@ func ParseCreateRelationQuery(createQuery string) (*types.RelationListElement, e
 		relationListElement.Type.Fields = append(relationListElement.Type.Fields, *fieldType)
 	}
 	relation.RecordsCount = 0
-	relation.DataFileName = relation.Name + "_table.bin"
+	relation.DataFileName = relation.Name + "_table.json"
 
 	relationListElement.Relations = append(relationListElement.Relations, *relation)
 	return relationListElement, nil
@@ -118,8 +118,8 @@ MEMBER [SINGLE] <Ім’я сутності>
 */
 
 // SyntInsertDS PROCEDURE related
-func ParseCreateDatasetQuery(createQuery string) (*types.DsListElement, error) {
-	ds := types.DsListElement{}
+func ParseCreateDatasetQuery(createQuery string) (*types.Dataset, error) {
+	ds := types.Dataset{}
 	ds.OwnerTableInfo.IsSingle = false
 	ds.MemberTableInfo.IsSingle = false
 	tokens, err := getStringsOfRegex(createQuery, identifierRegex)
@@ -151,6 +151,10 @@ func ParseCreateDatasetQuery(createQuery string) (*types.DsListElement, error) {
 			_, memberTable := SysCatalog.GetRelationByName(memberName)
 
 			ds.MemberTableInfo.Table = memberTable
+		}
+		if ds.DatasetElements == nil {
+			t := make([]types.DatasetElement, 0)
+			ds.DatasetElements = &t
 		}
 	}
 
@@ -225,7 +229,7 @@ func parseInsertTupleBrackets(fieldNames []string, tupleBracketString string) (m
 	if len(values) != len(fieldNames) {
 		return nil,
 			fmt.Errorf("expected number of fields %d, got number of fields %d in string (%s)",
-				len(values), len(fieldNames), tupleBracketString)
+				len(fieldNames), len(values), tupleBracketString)
 	}
 
 	var res map[string]string = make(map[string]string)

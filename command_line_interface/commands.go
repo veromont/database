@@ -51,6 +51,14 @@ var Commands = map[string]Command{
 		Usage:       "INSERT DATASET|RELATION <FILENAME>",
 		minArgCount: 3,
 	},
+	"select": {
+		Usage:       "SELECT DATASET|RELATION <OBJECT NAME>",
+		minArgCount: 3,
+	},
+	"execute": {
+		Usage:       "EXECUTE <FILENAME>",
+		minArgCount: 2,
+	},
 }
 
 func IsUsageCorrect(userInput string) bool {
@@ -59,12 +67,12 @@ func IsUsageCorrect(userInput string) bool {
 	return len(args) >= Commands[command].minArgCount
 }
 
-func GetArgumentsFromCommand(userInput string) (string, string, string) {
+func GetArgumentsFromCommand(userInput string) (string, string, string, []string) {
 	tokens := strings.Split(userInput, " ")
 	command := tokens[0]
 
 	if len(tokens) < 2 {
-		return command, "", ""
+		return command, "", "", nil
 	}
 
 	object := tokens[1]
@@ -82,7 +90,12 @@ func GetArgumentsFromCommand(userInput string) (string, string, string) {
 		filename = tokens[2]
 	}
 
-	return command, object, filename
+	var args []string = nil
+	if len(tokens) > 3 {
+		args = tokens[3:]
+	}
+
+	return command, object, filename, args
 }
 
 func CommandExists(command string) bool {

@@ -1,0 +1,6 @@
+INSERT INTO users (id#,
+    Dname,
+    login,
+    password,
+    join_date)
+VALUES ("1", "john pork", "john1" "asdfg123", "2025-01-01 23:59:59")

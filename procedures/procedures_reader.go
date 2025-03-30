@@ -60,7 +60,7 @@ func LoadRelationListElements(filename string) []types.RelationListElement {
 }
 
 // LOADDS PROCEDURES
-func LoadDatasets(filename string) []types.DsListElement {
+func LoadDatasets(filename string) []types.Dataset {
 	file, err := os.Open(filename)
 	if err != nil {
 		fmt.Printf("Error encountered: %s", err.Error())
@@ -68,10 +68,10 @@ func LoadDatasets(filename string) []types.DsListElement {
 	}
 	defer file.Close()
 
-	result := make([]types.DsListElement, 0)
+	result := make([]types.Dataset, 0)
 	var next int32
 	for next != -1 {
-		var dsListElem types.DsListElement
+		var dsListElem types.Dataset
 
 		next = readInt32(file)
 
@@ -87,8 +87,9 @@ func LoadDatasets(filename string) []types.DsListElement {
 		}
 
 		ownerKvCount := readInt32(file)
-		dsListElem.Datasets = make([]types.Dataset, ownerKvCount)
-		for i := range dsListElem.Datasets {
+		dsTemp := make([]types.DatasetElement, ownerKvCount)
+		dsListElem.DatasetElements = &dsTemp
+		for i := range *dsListElem.DatasetElements {
 			readDataset(file, &dsListElem, i)
 		}
 
@@ -109,15 +110,17 @@ func LoadDatasets(filename string) []types.DsListElement {
 }
 
 // RECOVERYDS PROCEDURE
-func readDataset(file *os.File, dsListElem *types.DsListElement, i int) {
+func readDataset(file *os.File, dsListElem *types.Dataset, i int) {
 	kvLen := readInt32(file)
-	dsListElem.Datasets[i].OwnerKV = readFixedSizeString(file, kvLen)
+	(*dsListElem.DatasetElements)[i].OwnerKV = readFixedSizeString(file, kvLen)
 
 	memKvCount := readInt32(file)
-	dsListElem.Datasets[i].MemberKVs = make([]string, memKvCount)
-	for j := range dsListElem.Datasets[i].MemberKVs {
+	memberSlice := make([]string, memKvCount)
+	(*dsListElem.DatasetElements)[i].MemberKVs = &memberSlice
+
+	for j := range *(*dsListElem.DatasetElements)[i].MemberKVs {
 		mkvLen := readInt32(file)
-		dsListElem.Datasets[i].MemberKVs[j] = readFixedSizeString(file, mkvLen)
+		(*(*dsListElem.DatasetElements)[i].MemberKVs)[j] = readFixedSizeString(file, mkvLen)
 	}
 }
 
