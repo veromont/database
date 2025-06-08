@@ -1,3 +1,9 @@
 AddElement books_chapters 1 1;
-AddElement books_chapters 1 1;
 AddElement books_chapters 2 1;
+
+AddElement books_chapters1 1 1;
+AddElement books_chapters1 2 2;
+
+AddElement AllBookChapters 1 1;
+AddElement AllBookChapters 2 1;
+AddElement AllBookChapters 2 2;

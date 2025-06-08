@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	CLI "myDb/command_line_interface"
+	operations "myDb/operations"
 	"myDb/params"
 	"myDb/procedures"
 	recording "myDb/records"
@@ -86,7 +87,7 @@ func launchProgram() {
 				}
 				for _, dataset := range SysCatalog.Datasets {
 					fmt.Print(dataset.ToString("\n"))
-					fmt.Print("\n\n\n")
+					fmt.Print("\n\n")
 				}
 			case "relations":
 				if len(SysCatalog.Relations) == 0 {
@@ -165,6 +166,10 @@ func launchProgram() {
 		case "execute":
 			filename = params.WorkDir + "\\" + object
 			executeFile(filename)
+
+		case "listfunc":
+			operations.PrintFunc()
+
 		case "exit":
 			fmt.Println("Selected: Exit the program")
 			os.Exit(0)

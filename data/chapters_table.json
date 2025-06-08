@@ -1,0 +1,40 @@
+[
+  {
+    "fields": [
+      {
+        "ID": 0,
+        "ValueType": 1005,
+        "Value": 1
+      },
+      {
+        "ID": 1,
+        "ValueType": 1001,
+        "Value": "start"
+      },
+      {
+        "ID": 2,
+        "ValueType": 1001,
+        "Value": "hello fresh"
+      }
+    ]
+  },
+  {
+    "fields": [
+      {
+        "ID": 0,
+        "ValueType": 1005,
+        "Value": 2
+      },
+      {
+        "ID": 1,
+        "ValueType": 1001,
+        "Value": "end"
+      },
+      {
+        "ID": 2,
+        "ValueType": 1001,
+        "Value": "chapter text"
+      }
+    ]
+  }
+]

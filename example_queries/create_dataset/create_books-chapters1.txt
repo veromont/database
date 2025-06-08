@@ -1,3 +1,3 @@
-SET books_chapters IS 
+SET books_chapters1 IS 
 OWNER books
 MEMBER chapters

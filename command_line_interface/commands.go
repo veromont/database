@@ -59,6 +59,10 @@ var Commands = map[string]Command{
 		Usage:       "EXECUTE <FILENAME>",
 		minArgCount: 2,
 	},
+	"listfunc": {
+		Usage:       "LISTFUNC",
+		minArgCount: 1,
+	},
 }
 
 func IsUsageCorrect(userInput string) bool {

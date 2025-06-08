@@ -1,8 +1,7 @@
-create relation create_relation\create_books.txt
-create relation create_relation\create_chapters.txt
+
 create relation create_relation\create_users.txt
 
-create dataset create_dataset\create_books-chapters.txt
+
 create dataset create_dataset\create_followers.txt
 create dataset create_dataset\create_likes.txt
 
@@ -42,4 +41,20 @@ create dataset create_dataset\create_books-chapters.txt
 execute proc1.txt
 save datasets 2.bin
 load datasets 2.bin
+print datasets
+
+create relation create_relation\create_books.txt
+create relation create_relation\create_chapters.txt
+
+create dataset create_dataset\create_books-chapters.txt
+create dataset create_dataset\create_books-chapters1.txt
+create dataset create_dataset\create.txt
+
+insert relation insert_relation\insert_chapter.txt
+insert relation insert_relation\insert_chapter1.txt
+
+insert relation insert_relation\insert_book.txt
+insert relation insert_relation\insert_book1.txt
+
+execute proc1.txt
 print datasets
